@@ -26,7 +26,6 @@ export async function saveSubscription(customerId: string, subscriptionId: strin
         status: subscription.status,
         price_id: subscription.items.data[0].price.id
     }
-    console.log("🚀 ~ file: manageSubscription.ts ~ line 29 ~ saveSubscription ~ subsData", subsData)
 
     
  if (createAction) {

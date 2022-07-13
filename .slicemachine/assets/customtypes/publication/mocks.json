@@ -1,0 +1,21 @@
+{
+  "id": "c38fb6b1-6bd1-4499-84d2-fdd99a3f7a0e",
+  "uid": "aliquam-nemo-sit",
+  "type": "publication",
+  "data": {
+    "Title": [
+      {
+        "type": "heading1",
+        "text": "Streamline 24/7 eyeballs",
+        "spans": []
+      }
+    ],
+    "Content": [
+      {
+        "type": "paragraph",
+        "text": "Ut velit proident deserunt.",
+        "spans": []
+      }
+    ]
+  }
+}
