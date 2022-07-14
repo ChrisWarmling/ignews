@@ -1,10 +1,25 @@
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
-import { getPrismicClient } from '../../services/prismic';
 import Prismic from '@prismicio/client'
-import styles from './styles.module.scss';
+import { RichText } from 'prismic-dom'
 
-export default function Posts() {
+import { getPrismicClient } from '../../services/prismic';
+
+import styles from './styles.module.scss';
+import Link from 'next/link';
+
+type Post = {
+    slug: string;
+    title: string;
+    excerpt: string;
+    updatedAt: string;
+}
+
+interface PostsProps {
+    posts: Post[];
+}
+
+export default function Posts({ posts }: PostsProps) {
     return (
         <>
             <Head>
@@ -13,27 +28,15 @@ export default function Posts() {
 
             <main className={styles.container}>
                 <div className={styles.posts}>
-                    <a href="">
-                        <time>22 de julho de 2022</time>
-                        <strong>Bun (can become) the ideal JavaScript runtime</strong>
-                        <p>Finally a JS runtime made to perform — running circles around both Deno and Node.js</p>
-                    </a>
-                    <a href="">
-                        <time>22 de julho de 2022</time>
-                        <strong>Bun (can become) the ideal JavaScript runtime</strong>
-                        <p>Finally a JS runtime made to perform — running circles around both Deno and Node.js</p>
-                    </a>
-                    <a href="">
-                        <time>22 de julho de 2022</time>
-                        <strong>Bun (can become) the ideal JavaScript runtime</strong>
-                        <p>Finally a JS runtime made to perform — running circles around both Deno and Node.js</p>
-                    </a>
-                    <a href="">
-                        <time>22 de julho de 2022</time>
-                        <strong>Bun (can become) the ideal JavaScript runtime</strong>
-                        <p>Finally a JS runtime made to perform — running circles around both Deno and Node.js</p>
-                    </a>
-
+                    {posts.map(({ slug, title, excerpt, updatedAt }) => (
+                        <Link href={`/posts/${slug}`} key={slug}>
+                            <a>
+                                <time>{updatedAt}</time>
+                                <strong>{title}</strong>
+                                <p>{excerpt}</p>
+                            </a>
+                        </Link>
+                    ))}
                 </div>
             </main>
         </>
@@ -50,9 +53,20 @@ export const getStaticProps: GetStaticProps = async () => {
         pageSize: 100,
     });
 
-    console.log(JSON.stringify(response, null, 2));
+    const posts = response.results.map(post => ({
+        slug: post.uid,
+        title: RichText.asText(post.data.Title),
+        excerpt: post.data.Content.find(content => content.type === 'paragraph')?.text ?? '',
+        updatedAt: new Date(post.last_publication_date).toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric',
+        }),
+    }))
 
     return {
-        props: {},
+        props: {
+            posts,
+        },
     };
 }
